@@ -1,17 +1,19 @@
 package com.tamojit.chronicles.service.product;
 
 import com.tamojit.chronicles.model.Product;
+import com.tamojit.chronicles.request.AddProductRequest;
+import com.tamojit.chronicles.request.UpdateProductRequest;
 
 import java.util.List;
 
 public interface IProductService {
-    Product addProduct(Product product);
+    Product addProduct(AddProductRequest request);
 
     Product getProductById(Long id);
 
     void deleteProductById(Long id);
 
-    void updateProduct(Product product, Long productId);
+    Product updateProduct(UpdateProductRequest request, Long productId);
 
     List<Product> getAllProducts();
 
