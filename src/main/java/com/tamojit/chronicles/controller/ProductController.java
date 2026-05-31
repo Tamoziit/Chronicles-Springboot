@@ -52,7 +52,9 @@ public class ProductController {
     public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequest product) {
         try {
             Product newProduct = productService.addProduct(product);
-            return ResponseEntity.ok(new ApiResponse("Created!", newProduct));
+            ProductDto productDto = productService.convertToDto(newProduct);
+
+            return ResponseEntity.ok(new ApiResponse("Created!", productDto));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse("Error:", INTERNAL_SERVER_ERROR));
