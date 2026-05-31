@@ -1,6 +1,5 @@
 package com.tamojit.chronicles.request;
 
-import com.tamojit.chronicles.model.Category;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -13,5 +12,5 @@ public class AddProductRequest {
     private BigDecimal price;
     private int inventory;
     private String description;
-    private Category category;
+    private String category;
 }

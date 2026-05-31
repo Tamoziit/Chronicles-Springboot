@@ -65,8 +65,8 @@ public class ImageService implements IImageService {
 
                 // setting DTO
                 ImageDto imageDto = new ImageDto();
-                imageDto.setImageId(savedImage.getId());
-                imageDto.setImageName(savedImage.getFileName());
+                imageDto.setId(savedImage.getId());
+                imageDto.setFileName(savedImage.getFileName());
                 imageDto.setDownloadUrl(savedImage.getDownloadUrl());
                 savedImageDto.add(imageDto);
             } catch (IOException | SQLException e) {
@@ -85,7 +85,7 @@ public class ImageService implements IImageService {
             image.setFileName(file.getOriginalFilename());
             image.setFileType(file.getContentType());
             image.setImage(new SerialBlob(file.getBytes()));
-            
+
             imageRepository.save(image);
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e.getMessage());

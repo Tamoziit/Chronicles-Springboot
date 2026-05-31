@@ -1,5 +1,6 @@
 package com.tamojit.chronicles.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,8 @@ public class Category {
     private Long id;
     private String name;
 
+    @JsonIgnore
+    // specifies Category model to not call Product model [avoiding infinitely cross-referencing loop b/w Category & Product]
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 

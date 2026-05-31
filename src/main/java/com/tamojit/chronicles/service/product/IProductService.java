@@ -1,5 +1,6 @@
 package com.tamojit.chronicles.service.product;
 
+import com.tamojit.chronicles.dto.ProductDto;
 import com.tamojit.chronicles.model.Product;
 import com.tamojit.chronicles.request.AddProductRequest;
 import com.tamojit.chronicles.request.UpdateProductRequest;
@@ -28,4 +29,8 @@ public interface IProductService {
     List<Product> getProductsByBrandAndName(String brand, String name);
 
     Long countProductsByBrandAndName(String brand, String name);
+
+    List<ProductDto> getConvertedProducts(List<Product> products);
+
+    ProductDto convertToDto(Product product);
 }
