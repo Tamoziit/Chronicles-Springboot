@@ -10,4 +10,7 @@ public interface ICartService {
     void clearCart(Long id);
 
     BigDecimal getTotalPrice(Long id);
+
+    // A default cart generated for all users at initial setup
+    Long initializeNewCart();
 }

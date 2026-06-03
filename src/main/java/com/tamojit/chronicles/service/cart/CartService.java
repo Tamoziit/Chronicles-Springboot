@@ -4,6 +4,8 @@ import com.tamojit.chronicles.exceptions.ResourceNotFoundException;
 import com.tamojit.chronicles.model.Cart;
 import com.tamojit.chronicles.repository.CartItemRepository;
 import com.tamojit.chronicles.repository.CartRepository;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,15 +19,11 @@ public class CartService implements ICartService {
 
     @Override
     public Cart getCart(Long id) {
-        Cart cart = cartRepository.findById(id)
+        return cartRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
-
-        BigDecimal totalAmount = cart.getTotalAmount();
-        cart.setTotalAmount(totalAmount);
-
-        return cartRepository.save(cart);
     }
 
+    @Transactional // a single transactional unit across tables
     @Override
     public void clearCart(Long id) {
         Cart cart = getCart(id);
@@ -45,5 +43,12 @@ public class CartService implements ICartService {
 //            .stream()
 //            .map(CartItem::getTotalPrice)
 //            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    // A default cart generated for all users at initial setup
+    @Override
+    public Long initializeNewCart() {
+        Cart newCart = new Cart();
+        return cartRepository.save(newCart).getId();
     }
 }

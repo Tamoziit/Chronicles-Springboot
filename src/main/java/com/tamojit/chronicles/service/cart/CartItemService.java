@@ -7,6 +7,7 @@ import com.tamojit.chronicles.model.Product;
 import com.tamojit.chronicles.repository.CartItemRepository;
 import com.tamojit.chronicles.repository.CartRepository;
 import com.tamojit.chronicles.service.product.IProductService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class CartItemService implements ICartItemService {
     private final ICartService cartService;
 
     @Override
+    @Transactional
     public void addItemToCart(Long cartId, Long productId, int quantity) {
         // getting the cart &  product
         Cart cart = cartService.getCart(cartId);
@@ -72,7 +74,10 @@ public class CartItemService implements ICartItemService {
                 item.setTotalPrice();
             });
 
-        BigDecimal totalAmount = cart.getTotalAmount();
+        BigDecimal totalAmount = cart.getItems()
+            .stream()
+            .map(CartItem::getTotalPrice)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
         cart.setTotalAmount(totalAmount);
 
         cartRepository.save(cart);
