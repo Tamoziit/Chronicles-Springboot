@@ -13,4 +13,6 @@ public interface ICartService {
 
     // A default cart generated for all users at initial setup
     Long initializeNewCart();
+
+    Cart getCartByUserId(Long userId);
 }
