@@ -1,6 +1,7 @@
 package com.tamojit.chronicles.service.cart;
 
 import com.tamojit.chronicles.model.Cart;
+import com.tamojit.chronicles.model.User;
 
 import java.math.BigDecimal;
 
@@ -12,7 +13,7 @@ public interface ICartService {
     BigDecimal getTotalPrice(Long id);
 
     // A default cart generated for all users at initial setup
-    Long initializeNewCart();
+    Cart initializeNewCart(User user);
 
     Cart getCartByUserId(Long userId);
 }

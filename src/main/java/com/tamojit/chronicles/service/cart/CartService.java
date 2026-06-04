@@ -2,6 +2,7 @@ package com.tamojit.chronicles.service.cart;
 
 import com.tamojit.chronicles.exceptions.ResourceNotFoundException;
 import com.tamojit.chronicles.model.Cart;
+import com.tamojit.chronicles.model.User;
 import com.tamojit.chronicles.repository.CartItemRepository;
 import com.tamojit.chronicles.repository.CartRepository;
 
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -47,9 +49,13 @@ public class CartService implements ICartService {
 
     // A default cart generated for all users at initial setup
     @Override
-    public Long initializeNewCart() {
-        Cart newCart = new Cart();
-        return cartRepository.save(newCart).getId();
+    public Cart initializeNewCart(User user) {
+        return Optional.ofNullable(getCartByUserId(user.getId()))
+            .orElseGet(() -> {
+                Cart cart = new Cart();
+                cart.setUser(user);
+                return cartRepository.save(cart);
+            });
     }
 
     @Override
