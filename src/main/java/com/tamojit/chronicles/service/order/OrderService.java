@@ -1,5 +1,6 @@
 package com.tamojit.chronicles.service.order;
 
+import com.tamojit.chronicles.dto.OrderDto;
 import com.tamojit.chronicles.enums.OrderStatus;
 import com.tamojit.chronicles.exceptions.ResourceNotFoundException;
 import com.tamojit.chronicles.model.Cart;
@@ -10,6 +11,7 @@ import com.tamojit.chronicles.repository.OrderRepository;
 import com.tamojit.chronicles.repository.ProductRepository;
 import com.tamojit.chronicles.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,6 +25,7 @@ public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
+    private final ModelMapper modelMapper;
 
     @Override
     public Order placeOrder(Long userId) {
@@ -43,14 +46,18 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Order getOrder(Long orderId) {
+    public OrderDto getOrder(Long orderId) {
         return orderRepository.findById(orderId)
-            .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+            .map(this::convertToDto) // converting Order -> OrderDto
+            .orElseThrow(() -> new ResourceNotFoundException("No Order found!"));
     }
 
     @Override
-    public List<Order> getUserOrders(Long userId) {
-        return orderRepository.findByUserId(userId);
+    public List<OrderDto> getUserOrders(Long userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
+        return orders.stream()
+            .map(this::convertToDto)
+            .toList();
     }
 
     // Helpers
@@ -85,5 +92,9 @@ public class OrderService implements IOrderService {
             .map(item -> item.getPrice()
                 .multiply(new BigDecimal(item.getQuantity())))
             .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private OrderDto convertToDto(Order order) {
+        return modelMapper.map(order, OrderDto.class);
     }
 }
