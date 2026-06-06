@@ -1,6 +1,7 @@
 package com.tamojit.chronicles.controller;
 
 import com.tamojit.chronicles.dto.ProductDto;
+import com.tamojit.chronicles.exceptions.AlreadyExistsException;
 import com.tamojit.chronicles.exceptions.ResourceNotFoundException;
 import com.tamojit.chronicles.model.Product;
 import com.tamojit.chronicles.request.AddProductRequest;
@@ -13,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -55,6 +55,9 @@ public class ProductController {
             ProductDto productDto = productService.convertToDto(newProduct);
 
             return ResponseEntity.ok(new ApiResponse("Created!", productDto));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(CONFLICT)
+                .body(new ApiResponse(e.getMessage(), null));
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse("Error:", INTERNAL_SERVER_ERROR));

@@ -2,6 +2,7 @@ package com.tamojit.chronicles.service.product;
 
 import com.tamojit.chronicles.dto.ImageDto;
 import com.tamojit.chronicles.dto.ProductDto;
+import com.tamojit.chronicles.exceptions.AlreadyExistsException;
 import com.tamojit.chronicles.exceptions.ResourceNotFoundException;
 import com.tamojit.chronicles.model.Category;
 import com.tamojit.chronicles.model.Image;
@@ -28,10 +29,15 @@ public class ProductService implements IProductService {
 
     @Override
     public Product addProduct(AddProductRequest request) {
-        /* Checking if the category is found -->
+        /* Validating if a product by same name & brand already exists.
+         * Checking whether the category is found -->
          * If Yes, set new Prod. under Category.
          * If No, save as new category & set prod in DB.
          */
+
+        if (productExists(request.getName(), request.getBrand())) {
+            throw new AlreadyExistsException(request.getName() + " " + request.getBrand() + " already exists");
+        }
 
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory()))
             .orElseGet(() -> {
@@ -40,6 +46,10 @@ public class ProductService implements IProductService {
             });
 
         return productRepository.save(createProduct(request, category));
+    }
+
+    private boolean productExists(String name, String brand) {
+        return productRepository.existsByNameAndBrand(name, brand);
     }
 
     private Product createProduct(AddProductRequest request, Category category) {
