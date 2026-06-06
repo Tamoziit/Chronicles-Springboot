@@ -1,4 +1,4 @@
-package com.tamojit.chronicles.config;
+package com.tamojit.chronicles.security.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
