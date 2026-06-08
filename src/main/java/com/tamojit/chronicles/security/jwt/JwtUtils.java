@@ -16,10 +16,10 @@ import java.util.List;
 
 @Component
 public class JwtUtils {
-    @Value("{auth.token.jwtSecret}")
+    @Value("${auth.token.jwtSecret}")
     private String jwtSecret;
 
-    @Value("{auth.token.expirationInMils}")
+    @Value("${auth.token.expirationInMils}")
     private int expirationTime;
 
     public String generateTokenForUser(Authentication authentication) {
@@ -34,7 +34,8 @@ public class JwtUtils {
         return Jwts.builder()
             .subject(userPrincipal.getEmail())
             .claim("id", userPrincipal.getId()) // setting data inside the token
-            .claim("roles", roles).issuedAt(new Date()).expiration(new Date((new Date()).getTime() + expirationTime))
+            .claim("roles", roles)
+            .issuedAt(new Date()).expiration(new Date((new Date()).getTime() + expirationTime))
             .signWith(key())
             .compact();
     }
